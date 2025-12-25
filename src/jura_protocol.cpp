@@ -24,7 +24,7 @@ public:
 };
 
 JuraProtocol::JuraProtocol() 
-    : pImpl(nullptr)
+    : pImpl(std::make_unique<Impl>())
     , connected_(false)
     , device_address_("") {
 }
@@ -33,7 +33,6 @@ JuraProtocol::~JuraProtocol() {
     if (connected_) {
         disconnectDevice();
     }
-    delete pImpl;
 }
 
 bool JuraProtocol::connectDevice(const std::string& device_address) {

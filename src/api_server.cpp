@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <memory>
+#include <regex>
 
 using json = nlohmann::json;
 
@@ -52,6 +53,19 @@ ApiServer::ApiServer(int port)
                 json response = {
                     {"success", false},
                     {"error", "device_address is required"}
+                };
+                setCorsHeaders(res);
+                res.status = 400;
+                res.set_content(response.dump(), "application/json");
+                return;
+            }
+            
+            // Validate Bluetooth MAC address format (XX:XX:XX:XX:XX:XX)
+            std::regex mac_regex("^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$");
+            if (!std::regex_match(device_address, mac_regex)) {
+                json response = {
+                    {"success", false},
+                    {"error", "Invalid device_address format. Expected format: XX:XX:XX:XX:XX:XX"}
                 };
                 setCorsHeaders(res);
                 res.status = 400;

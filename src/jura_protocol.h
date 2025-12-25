@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <memory>
 
 /**
  * Jura protocol interface wrapper
@@ -33,7 +34,7 @@ public:
 
 private:
     class Impl;
-    class Impl* pImpl;
+    std::unique_ptr<Impl> pImpl;
     
     bool connected_;
     std::string device_address_;
