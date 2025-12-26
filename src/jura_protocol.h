@@ -20,6 +20,9 @@ public:
     bool connectDevice(const std::string& device_address);
     bool disconnectDevice();
     bool isConnected() const;
+    
+    // Device discovery
+    std::vector<std::string> listDevices();
 
     // Protocol commands
     std::string sendCommand(const std::string& command);

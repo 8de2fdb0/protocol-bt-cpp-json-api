@@ -75,6 +75,30 @@ bool JuraProtocol::isConnected() const {
     return connected_;
 }
 
+std::vector<std::string> JuraProtocol::listDevices() {
+    // TODO: Actual device scanning using protocol-bt-cpp
+    // This would use BLE scanning to discover nearby Bluetooth devices
+    // and filter for devices that match Jura device characteristics
+    
+    std::cout << "Scanning for Jura devices..." << std::endl;
+    
+    // Simulate device discovery
+    // In production, this would:
+    // 1. Scan for BLE devices
+    // 2. Filter by service UUIDs or device names matching Jura devices
+    // 3. Return list of device addresses
+    
+    std::vector<std::string> devices = {
+        "AA:BB:CC:DD:EE:01",  // Simulated Jura device 1
+        "AA:BB:CC:DD:EE:02",  // Simulated Jura device 2
+        "AA:BB:CC:DD:EE:03"   // Simulated Jura device 3
+    };
+    
+    std::cout << "Found " << devices.size() << " Jura device(s)" << std::endl;
+    
+    return devices;
+}
+
 std::string JuraProtocol::sendCommand(const std::string& command) {
     if (!connected_) {
         return "ERROR: Not connected";
