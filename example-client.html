@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jura Coffee Maker API Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+        }
+        .error {
+            background-color: #ffebee;
+            border-left-color: #f44336;
+        }
+        .response {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>☕ Jura Coffee Maker API Client</h1>
+    
+    <div class="section">
+        <h2>Connection</h2>
+        <input type="text" id="deviceAddress" placeholder="AA:BB:CC:DD:EE:FF" value="AA:BB:CC:DD:EE:FF">
+        <button onclick="connect()">Connect</button>
+        <button onclick="disconnect()">Disconnect</button>
+        <button onclick="getStatus()">Get Status</button>
+        <div id="connectionResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>Brew Coffee</h2>
+        <select id="productType">
+            <option value="coffee">Coffee</option>
+            <option value="espresso">Espresso</option>
+            <option value="cappuccino">Cappuccino</option>
+            <option value="latte">Latte</option>
+        </select>
+        <button onclick="brew()">Brew</button>
+        <div id="brewResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>Device Info</h2>
+        <button onclick="getDeviceInfo()">Get Device Info</button>
+        <div id="infoResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+        <h2>Custom Command</h2>
+        <input type="text" id="customCommand" placeholder="Enter command">
+        <button onclick="sendCommand()">Send</button>
+        <div id="commandResponse" class="response"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            try {
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+
+        async function connect() {
+            const deviceAddress = document.getElementById('deviceAddress').value;
+            const result = await apiCall('/api/connect', 'POST', { device_address: deviceAddress });
+            document.getElementById('connectionResponse').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function disconnect() {
+            const result = await apiCall('/api/disconnect', 'POST');
+            document.getElementById('connectionResponse').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function getStatus() {
+            const result = await apiCall('/api/status');
+            document.getElementById('connectionResponse').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function brew() {
+            const product = document.getElementById('productType').value;
+            const result = await apiCall('/api/brew', 'POST', { product });
+            document.getElementById('brewResponse').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function getDeviceInfo() {
+            const result = await apiCall('/api/device-info');
+            document.getElementById('infoResponse').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function sendCommand() {
+            const command = document.getElementById('customCommand').value;
+            const result = await apiCall('/api/command', 'POST', { command });
+            document.getElementById('commandResponse').textContent = JSON.stringify(result, null, 2);
+        }
+
+        // Auto-refresh status on page load
+        window.onload = getStatus;
+    </script>
+</body>
+</html>
