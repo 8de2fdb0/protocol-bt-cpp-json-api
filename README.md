@@ -72,6 +72,29 @@ Get current connection status.
 }
 ```
 
+### GET /api/devices
+List available Jura devices.
+
+**Response:**
+```json
+{
+  "success": true,
+  "count": 3,
+  "devices": [
+    {
+      "address": "AA:BB:CC:DD:EE:01",
+      "name": "Jura Coffee Maker",
+      "type": "jura"
+    },
+    {
+      "address": "AA:BB:CC:DD:EE:02",
+      "name": "Jura Coffee Maker",
+      "type": "jura"
+    }
+  ]
+}
+```
+
 ### POST /api/connect
 Connect to a Jura device.
 
@@ -154,6 +177,11 @@ Get information about the connected device.
 
 ### Using curl
 
+List available devices:
+```bash
+curl http://localhost:8080/api/devices
+```
+
 Connect to device:
 ```bash
 curl -X POST http://localhost:8080/api/connect \
@@ -176,6 +204,11 @@ curl http://localhost:8080/api/status
 ### Using JavaScript/Fetch
 
 ```javascript
+// List available devices
+fetch('http://localhost:8080/api/devices')
+  .then(res => res.json())
+  .then(data => console.log(data));
+
 // Connect to device
 fetch('http://localhost:8080/api/connect', {
   method: 'POST',

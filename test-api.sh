@@ -40,6 +40,7 @@ test_endpoint() {
 test_endpoint "Health Check" "GET" "/health" ""
 test_endpoint "API Documentation" "GET" "/api" ""
 test_endpoint "Initial Status" "GET" "/api/status" ""
+test_endpoint "List Devices" "GET" "/api/devices" ""
 test_endpoint "Connect to Device" "POST" "/api/connect" '{"device_address":"AA:BB:CC:DD:EE:FF"}'
 test_endpoint "Status After Connection" "GET" "/api/status" ""
 test_endpoint "Device Info" "GET" "/api/device-info" ""

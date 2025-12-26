@@ -66,6 +66,7 @@
     
     <div class="section">
         <h2>Connection</h2>
+        <button onclick="listDevices()">List Devices</button>
         <input type="text" id="deviceAddress" placeholder="AA:BB:CC:DD:EE:FF" value="AA:BB:CC:DD:EE:FF">
         <button onclick="connect()">Connect</button>
         <button onclick="disconnect()">Disconnect</button>
@@ -117,6 +118,11 @@
             } catch (error) {
                 return { error: error.message };
             }
+        }
+
+        async function listDevices() {
+            const result = await apiCall('/api/devices');
+            document.getElementById('connectionResponse').textContent = JSON.stringify(result, null, 2);
         }
 
         async function connect() {

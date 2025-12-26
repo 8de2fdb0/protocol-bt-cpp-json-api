@@ -34,6 +34,38 @@ bool JuraController::isConnected() const {
     return pImpl->protocol->isConnected();
 }
 
+nlohmann::json JuraController::listDevices() {
+    nlohmann::json result;
+    
+    try {
+        std::vector<std::string> devices = pImpl->protocol->listDevices();
+        
+        // Filter to only include Jura devices
+        // In a real implementation, this would check device names,
+        // service UUIDs, or other characteristics to identify Jura devices
+        nlohmann::json deviceList = nlohmann::json::array();
+        
+        for (const auto& deviceAddress : devices) {
+            nlohmann::json device;
+            device["address"] = deviceAddress;
+            device["name"] = "Jura Coffee Maker";  // In production, query actual device name
+            device["type"] = "jura";
+            deviceList.push_back(device);
+        }
+        
+        result["success"] = true;
+        result["devices"] = deviceList;
+        result["count"] = deviceList.size();
+    } catch (const std::exception& e) {
+        result["success"] = false;
+        result["error"] = e.what();
+        result["devices"] = nlohmann::json::array();
+        result["count"] = 0;
+    }
+    
+    return result;
+}
+
 nlohmann::json JuraController::getStatus() {
     nlohmann::json status;
     status["connected"] = pImpl->protocol->isConnected();

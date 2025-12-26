@@ -43,6 +43,25 @@ ApiServer::ApiServer(int port)
         res.set_content(response.dump(), "application/json");
     });
     
+    // List devices endpoint
+    pImpl->server->Get("/api/devices", [this, setCorsHeaders](const httplib::Request&, httplib::Response& res) {
+        try {
+            json response = controller_->listDevices();
+            setCorsHeaders(res);
+            res.set_content(response.dump(), "application/json");
+        } catch (const std::exception& e) {
+            json response = {
+                {"success", false},
+                {"error", e.what()},
+                {"devices", json::array()},
+                {"count", 0}
+            };
+            setCorsHeaders(res);
+            res.status = 500;
+            res.set_content(response.dump(), "application/json");
+        }
+    });
+    
     // Connect to device endpoint
     pImpl->server->Post("/api/connect", [this, setCorsHeaders](const httplib::Request& req, httplib::Response& res) {
         try {
@@ -171,6 +190,11 @@ ApiServer::ApiServer(int port)
                     {"path", "/api/status"},
                     {"method", "GET"},
                     {"description", "Get current connection status"}
+                },
+                {
+                    {"path", "/api/devices"},
+                    {"method", "GET"},
+                    {"description", "List available Jura devices"}
                 },
                 {
                     {"path", "/api/connect"},
